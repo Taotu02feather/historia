@@ -55,6 +55,7 @@ def settle(world, nations: List[Nation], cfg: Config,
     for n in nations:
         agri, mine, indu = outputs[n.id]
         n.gdp = agri + mine + indu  # 产值口径 GDP
+        n.agri, n.mine, n.indu = agri, mine, indu  # 供 pop 财富分配使用
         market_income = (agri * prices["farm"]
                          + mine * prices["mine"]
                          + indu * prices["factory"])

@@ -123,3 +123,8 @@ class Nation:
     reform_cooldown: int = 0
     neg_profit_years: int = 0
     suppressed: bool = False
+    # 当年运行期缓存（不进入 CSV）
+    agri: float = 0.0
+    mine: float = 0.0
+    indu: float = 0.0
+    rent_rate: float = 0.0

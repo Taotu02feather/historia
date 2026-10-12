@@ -71,6 +71,7 @@ def create_nation(nid: int, name: str, cfg: Config, rng: np.random.Generator,
         id=nid, name=name, provinces=provinces,
         treasury=cfg.treasury, tax_rate=cfg.tax_rate,
         goal=cfg.goal, tech_level=cfg.initial_tech,
+        rent_rate=cfg.RENT_RATE,
     )
 
 
