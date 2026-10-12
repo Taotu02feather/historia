@@ -18,6 +18,7 @@ class EventTracker:
         self.last_system: Dict[int, str] = {}
         self.last_gov: Dict[int, frozenset] = {}
         self.neg_years: Dict[int, int] = {}
+        self.ig_prev: Dict[tuple, float] = {}
 
 
 def _once(tracker: EventTracker, nid: int, key: str) -> bool:
@@ -71,9 +72,11 @@ def _detect_nation(n: Nation, cfg: Config, tracker: EventTracker,
 
     # --- 利益集团事件 ---
     for ig in igs.values():
-        if ig.influence > cfg.IG_FORMED_THRESH \
-                and _once(tracker, n.id, f"ig_formed:{ig.id}"):
+        # ig_formed：影响力从 <= 阈值跨越到 > 阈值（初始已存在的 IG 不算新形成）
+        prev = tracker.ig_prev.get((n.id, ig.id), ig.influence)
+        if prev <= cfg.IG_FORMED_THRESH and ig.influence > cfg.IG_FORMED_THRESH:
             events.append(_event(n, year, "ig_formed", f"{ig.name} 影响力>0.01"))
+        tracker.ig_prev[(n.id, ig.id)] = ig.influence
         if ig.influence > cfg.IG_DOMINANT \
                 and _once(tracker, n.id, f"ig_dominant:{ig.id}"):
             events.append(_event(n, year, "ig_dominant",

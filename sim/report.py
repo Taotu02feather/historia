@@ -16,9 +16,8 @@ def _timestamp() -> str:
     return datetime.now().strftime("%Y%m%d_%H%M%S")
 
 
-def build_filename(cfg: Config, ts: str) -> str:
+def build_filename(mode: str, cfg: Config, ts: str) -> str:
     """输出文件名（含关键参数，避免覆盖）。"""
-    mode = "world" if cfg.nations > 1 else "sim"
     if mode == "sim":
         return f"sim_{cfg.goal}_y{cfg.years}_s{cfg.seed}_{ts}"
     return f"world_n{cfg.nations}_y{cfg.years}_s{cfg.seed}_{ts}"
@@ -49,7 +48,8 @@ def _final_row(n: Nation) -> dict:
 def write_report(result, cfg: Config, outdir: str = "output") -> List[str]:
     """生成 CSV 与 TXT，返回生成的文件路径列表。"""
     ts = _timestamp()
-    base = build_filename(cfg, ts)
+    mode = result.params.get("mode", "sim")
+    base = build_filename(mode, cfg, ts)
     os.makedirs(outdir, exist_ok=True)
 
     yearly_path = os.path.join(outdir, base + ".csv")
