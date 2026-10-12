@@ -123,16 +123,22 @@ def _regress_system(nation: Nation) -> None:
             nation.political_system = SYSTEM_ORDER[idx - 1]
 
 
-def _update_system(nation: Nation, cfg: Config) -> None:
-    """制度变化：压力高前进、压力低倒退、教会强则 theocracy。"""
+def _update_system(nation: Nation, cfg: Config, goal) -> None:
+    """制度变化：压力高前进、压力低倒退、教会强则 theocracy。
+
+    改革立场（reform_stance）通过 AI_REFORM_PUSH 调整有效压力：
+    推进（+）更容易触发改革，镇压（-）更难。
+    """
+    stance = goal.reform_stance if goal else 0
+    eff_pressure = nation.reform_pressure + stance * cfg.AI_REFORM_PUSH
     if nation.reform_cooldown > 0:
         nation.reform_cooldown -= 1
     else:
-        if nation.reform_pressure > cfg.REFORM_THRESH:
+        if eff_pressure > cfg.REFORM_THRESH:
             nation.reform_level = _clamp(nation.reform_level + cfg.REFORM_STEP, 0.0, 1.0)
             _advance_system(nation)
             nation.reform_cooldown = cfg.REFORM_COOLDOWN
-        elif nation.reform_pressure < cfg.REGRESS_THRESH:
+        elif eff_pressure < cfg.REGRESS_THRESH:
             nation.reform_level = _clamp(nation.reform_level - cfg.REFORM_STEP, 0.0, 1.0)
             _regress_system(nation)
             nation.reform_cooldown = cfg.REFORM_COOLDOWN
@@ -143,7 +149,8 @@ def _update_system(nation: Nation, cfg: Config) -> None:
 
 def settle(nations: List[Nation], cfg: Config,
            goal_map: Optional[Dict] = None) -> None:
-    """3. 政治结算。goal_map 当前未使用（保留接口一致）。"""
+    """3. 政治结算。"""
+    goal_map = goal_map or {}
     for n in nations:
         _step_awareness(n, cfg)
         _apply_clergy_suppression(n, cfg)
@@ -153,7 +160,7 @@ def settle(nations: List[Nation], cfg: Config,
         interest_group.update_stance(n, cfg)
         n.reform_pressure = _reform_pressure(n)
         _update_stability(n, cfg)
-        _update_system(n, cfg)
+        _update_system(n, cfg, goal_map.get(n.goal))
         interest_group.update_agitation_opposition(n, cfg)
 
 

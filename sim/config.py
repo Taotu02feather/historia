@@ -125,6 +125,7 @@ class Config:
     # ============ AI ============
     TAX_MIN: float = 0.05
     TAX_MAX: float = 0.60
+    AI_REFORM_PUSH: float = 0.05       # 改革立场对改革压力的推动系数
     BUILD_COST_FARM: float = 300.0
     BUILD_COST_MINE: float = 500.0
     BUILD_COST_FACTORY: float = 800.0
