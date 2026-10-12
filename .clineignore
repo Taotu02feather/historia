@@ -1,0 +1,31 @@
+# 输出目录（Cline 不需要读，浪费 token）
+output/
+
+# Python 缓存
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# 虚拟环境
+.venv/
+venv/
+env/
+
+# Git 内部
+.git/
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+
+# 系统
+.DS_Store
+Thumbs.db
+
+# 虚拟环境锁文件
+poetry.lock
+Pipfile.lock
