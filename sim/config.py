@@ -142,3 +142,16 @@ class Config:
     UPRISING_STAB_HIT: float = 0.3
     UPRISING_AGITATE_SPREAD: float = 0.1
     UPRISING_RF_DECLINE: float = 0.7   # 起义后 rural_folk 影响力保留比例
+
+    # ============ 关键事件阈值 ============
+    REVOLT_THRESH: float = 0.2
+    ECONOMIC_CRISIS_YEARS: int = 3
+    CLASS_MOBILITY_SHARE: float = 0.15  # 工人+职员占比达到即"阶级流动启动"
+    WORKER_AWAKENING_THRESH: float = 0.5
+    INDUSTRIAL_REVOLUTION_SHARE: float = 0.30
+    IG_FORMED_THRESH: float = 0.01
+    TU_LEGAL_INFLUENCE: float = 0.25
+    LABOR_CRISIS_SAT: float = 0.2
+    LABOR_CRISIS_PRESS: float = 0.4
+    ALLIANCE_SAT: float = 0.3
+    ALLIANCE_INFLUENCE: float = 0.15
