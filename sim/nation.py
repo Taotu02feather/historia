@@ -46,11 +46,10 @@ def make_pops(cfg: Config, total_pop: int) -> List[Pop]:
 
 
 def create_nation(nid: int, name: str, cfg: Config, rng: np.random.Generator,
-                  start_province_id: int) -> Nation:
-    """创建一个国家（省份 + 初始人口）。provinces_per_nation 从 cfg 取。"""
-    n_prov = cfg.provinces if cfg.provinces_per_nation <= 0 else cfg.provinces_per_nation
+                  start_province_id: int, n_provinces: int) -> Nation:
+    """创建一个国家（省份 + 初始人口）。"""
     provinces: List[Province] = []
-    for i in range(n_prov):
+    for i in range(n_provinces):
         land_quality = float(rng.uniform(0.3, 1.0))
         coal_deposit = float(rng.uniform(0.0, 1.0))
         # 农业社会起点：农场为主，少量矿场/工厂
