@@ -665,9 +665,22 @@ chore: 初始化 historia 项目结构 → docs: 补充设计文档 → feat: �
 
 ## 19. 实现时决策（阶段 B 中自行拍板的默认值）
 
-> 实现过程中如遇文档未明确之处，采用合理默认值并在本节记录，不中断提问。
+> 实现过程中文档未明确之处，采用以下默认值（均集中在 config.py，可调）。
 
-- （待实现过程中逐条补充）
+1. **动态地租率**：`rent_rate = RENT_RATE × (1 + 0.5 × landowners.influence)`，clamp `[0.30, 0.60]`。"压迫过重"判定 = `rent_rate > 0.35`（等价于"地租/农民产出 > 0.35"）。
+2. **stability 的教会项**：GoalParams 未定义 `clergy_bias`，改用 `church.influence` 代入 `STAB_CLERGY` 项（教会实际影响力影响稳定）。
+3. **选举简化**：republic/democracy 按影响力 top3 执政（democracy 将 trade_unions 影响力 ×1.5 后再选），不做固定周期选举。
+4. **收入口径**：税收按 `market_income`（产出×价格）计算；军费/福利/行政按 `gdp`（产值口径）计算。
+5. **财富平滑**：生产职业 `wealth = 0.7×旧值 + 0.3×当年人均收入`；非生产职业（军人/教士/官僚）wealth 向 `REF_WEALTH` 缓慢靠拢（+10% 差距）。
+6. **军人招募目标比例** = `下限 + military_spending × 4 × 上限`，clamp 到 `[下限, 上限]`。
+7. **class_mobility_start 代理**：用"工人+职员占比 > 0.15"判定（未单独追踪累计流动人数）。
+8. **ig_formed 代理**：用"影响力 > 0.01"判定（初始所有 IG 均有成员，此事件通常不触发）。
+9. **经济衰退** = 最近一年 GDP 下降（`gdp_history[-1] < gdp_history[-2]`）。
+10. **资本家负利润** = 资本家人均利润较上年下降，连续 `NEG_PROFIT_YEARS` 年触发 capitalists→clerks。
+11. **改革立场生效**：`reform_stance` 通过 `AI_REFORM_PUSH`（0.05）加到有效改革压力上（推进更易改革、镇压更难）；其 IG 反应（受益/受损）在 ai.decide 中调整 agitation。
+12. **theocracy 退化**：theocracy 目标初始仍为 absolute_monarchy，靠 church 影响力 > 0.5 动态退化为 theocracy（不初始固定）。
+13. **IG 躁动衰减**：决策受益 IG `-0.02`、受损 `+0.03`；在野 IG 每年 `+0.05`；起义后 rural_folk 躁动 ×0.5（避免连环触发）。
+
 
 
 
